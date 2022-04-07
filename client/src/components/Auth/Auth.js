@@ -15,19 +15,39 @@ import useStyles from "./styles";
 import Input from "./Input";
 import Icon from "./icon";
 import { useHistory } from "react-router-dom";
+import { signIn, signUp } from "../../actions/auth.js";
+
+const initialState = {
+	firstName: "",
+	lastName: "",
+	email: "",
+	password: "",
+	confirmPassword: "",
+};
 
 const Auth = () => {
 	const classes = useStyles();
 	const [showPassword, setShowPassword] = useState(false);
 	const [isSignup, setIsSignup] = useState(false);
+	const [formData, setFormData] = useState(initialState);
 	const dispatch = useDispatch();
 	const history = useHistory();
 
 	const handleShowPassword = () => setShowPassword(!showPassword);
 
-	const handleSubmit = () => {};
+	const handleSubmit = (e) => {
+		e.preventDefault();
 
-	const handleChange = () => {};
+		if (isSignup) {
+			dispatch(signUp(formData, history));
+		} else {
+			dispatch(signIn(formData, history));
+		}
+	};
+
+	const handleChange = (e) => {
+		setFormData({ ...formData, [e.target.name]: e.target.value });
+	};
 
 	const switchMode = () => {
 		setIsSignup(!isSignup);
@@ -60,7 +80,7 @@ const Auth = () => {
 				<Typography variant="h5">
 					{isSignup ? "Sign up" : "Sign in"}
 				</Typography>
-				<form className={classes.form} onSubmit={() => handleSubmit()}>
+				<form className={classes.form} onSubmit={handleSubmit}>
 					<Grid container spacing={2}>
 						{isSignup && (
 							<>
